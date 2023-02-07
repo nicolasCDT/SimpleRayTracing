@@ -11,5 +11,5 @@ We had to work on recursive functions. I know they make my script slower.
 ### Author
 * Nicolas Coudert :
   * [GitHub](https://github.com/nicolasCDT)
-  * Discord: Takuma#0075
+  * Discord: Takuma#2725
   * [Email](mailto:nicolas@coudert.pro)
