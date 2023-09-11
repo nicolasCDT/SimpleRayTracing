@@ -5,8 +5,7 @@ from utils import *
 def tof(contact):
     if is_num(contact):
         return contact
-    else:
-        return contact.t
+    return contact.t
 
 
 def inter(a, b):
@@ -18,19 +17,17 @@ def inter(a, b):
     """
     if a is None or b is None:
         return None
-    else:
-        ((a1, a2), qa) = (hd(a), tl(a))
-        ((b1, b2), qb) = (hd(b), tl(b))
-        assert (tof(a1) <= tof(a2))
-        assert (tof(b1) <= tof(b2))
-        if tof(a1) > tof(b1):
-            return inter(b, a)
-        elif tof(a2) < tof(b1):
-            return inter(qa, b)
-        elif tof(b2) <= tof(a2):
-            return cons((b1, b2), inter(a, qb))
-        else:
-            return cons((b1, a2), inter(qa, b))
+    ((a1, a2), qa) = (hd(a), tl(a))
+    ((b1, b2), qb) = (hd(b), tl(b))
+    assert (tof(a1) <= tof(a2))
+    assert (tof(b1) <= tof(b2))
+    if tof(a1) > tof(b1):
+        return inter(b, a)
+    if tof(a2) < tof(b1):
+        return inter(qa, b)
+    if tof(b2) <= tof(a2):
+        return cons((b1, b2), inter(a, qb))
+    return cons((b1, a2), inter(qa, b))
 
 
 def reunion(a, b):
@@ -42,31 +39,28 @@ def reunion(a, b):
     """
     if a is None:
         return b
-    elif b is None:
+    if b is None:
         return a
-    else:
-        (ta, qa) = (hd(a), tl(a))
-        (tb, qb) = (hd(b), tl(b))
-        (a1, a2) = ta
-        (b1, b2) = tb
-        assert (tof(a1) <= tof(a2))
-        assert (tof(b1) <= tof(b2))
-        if tof(a1) > tof(b1):
-            return reunion(b, a)
-        # ta commence avant tb :
-        elif tof(a2) < tof(b1):
-            # ta finit avant que tb, et donc b commence :
-            # print( 'a2 < b1 ')
-            return cons(ta, reunion(qa, b))
-        elif tof(b2) <= tof(a2):
-            # tb est inclus dans ta :
-            # print( 'b2 <= a2')
-            return reunion(a, qb)
-        else:
-            # ordre= a1, b1, a2, b2:
-            return reunion(cons((a1, b2), qb), qa)
+    (ta, qa) = (hd(a), tl(a))
+    (tb, qb) = (hd(b), tl(b))
+    (a1, a2) = ta
+    (b1, b2) = tb
+    assert (tof(a1) <= tof(a2))
+    assert (tof(b1) <= tof(b2))
+    if tof(a1) > tof(b1):
+        return reunion(b, a)
+    # ta commence avant tb :
+    if tof(a2) < tof(b1):
+        # ta finit avant que tb, et donc b commence :
+        # print( 'a2 < b1 ')
+        return cons(ta, reunion(qa, b))
+    if tof(b2) <= tof(a2):
+        # tb est inclus dans ta :
+        # print( 'b2 <= a2')
+        return reunion(a, qb)
+    # ordre= a1, b1, a2, b2:
+    return reunion(cons((a1, b2), qb), qa)
 
-        # a moins b :
 
 
 def differ(a, b):
@@ -78,34 +72,30 @@ def differ(a, b):
     """
     if a is None:
         return None
-    elif b is None:
+    if b is None:
         return a
-    else:
-        (ta, qa) = (hd(a), tl(a))
-        (tb, qb) = (hd(b), tl(b))
-        (a1, a2) = ta
-        (b1, b2) = tb
-        assert (tof(a1) <= tof(a2))
-        assert (tof(b1) <= tof(b2))
-        if tof(b2) <= tof(a1):
-            # b1 b2 a1 a2
-            return differ(a, qb)
-        elif tof(a2) <= tof(b1):
-            # a1 a2 b1 b2
-            return cons(ta, differ(qa, b))
-        elif tof(b1) <= tof(a1):
-            if tof(b2) <= tof(a2):
-                # b1 a1 b2 a2
-                return differ(cons((b2, a2), qa), qb)
-            else:
-                # b1 a1 a2 b2
-                return differ(qa, b)
-        elif tof(a2) <= tof(b2):
-            # a1 b1 a2 b2
-            return differ((cons((a1, b1), qa)), b)
-        else:
-            # a1, b1, b2, a2
-            return differ(cons((a1, b1), cons((b2, a2), qa)), qb)
+    (ta, qa) = (hd(a), tl(a))
+    (tb, qb) = (hd(b), tl(b))
+    (a1, a2) = ta
+    (b1, b2) = tb
+    assert (tof(a1) <= tof(a2))
+    assert (tof(b1) <= tof(b2))
+    if tof(b2) <= tof(a1):
+        # b1 b2 a1 a2
+        return differ(a, qb)
+    if tof(a2) <= tof(b1):
+        # a1 a2 b1 b2
+        return cons(ta, differ(qa, b))
+    if tof(b1) <= tof(a1):
+        if tof(b2) <= tof(a2):
+            # b1 a1 b2 a2
+            return differ(cons((b2, a2), qa), qb)
+        return differ(qa, b)
+    if tof(a2) <= tof(b2):
+        # a1 b1 a2 b2
+        return differ((cons((a1, b1), qa)), b)
+    # a1, b1, b2, a2
+    return differ(cons((a1, b1), cons((b2, a2), qa)), qb)
 
 
 # pour fusionner des intervalles contigus :
@@ -117,13 +107,11 @@ def simplifie_intervalles(intervalles):
     """
     if None == intervalles or None == tl(intervalles):
         return intervalles
-    else:
-        a = (a1, a2) = hd(intervalles)
-        (b1, b2) = hd(tl(intervalles))
-        if tof(a2) == tof(b1):
-            return simplifie_intervalles(cons((a1, b2), tl(tl(intervalles))))
-        else:
-            return cons(a, simplifie_intervalles(tl(intervalles)))
+    a = (a1, a2) = hd(intervalles)
+    (b1, b2) = hd(tl(intervalles))
+    if tof(a2) == tof(b1):
+        return simplifie_intervalles(cons((a1, b2), tl(tl(intervalles))))
+    return cons(a, simplifie_intervalles(tl(intervalles)))
 
 
 def intersec(vec1, vec2):
